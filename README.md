@@ -38,6 +38,7 @@ scripts/
 data/
   mobilenetv2/
   resnet18v1/
+  resnet18v1/
 
 models/
   ExecuTorch (.pte, .etrecord)
