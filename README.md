@@ -21,6 +21,37 @@ This artifact includes:
 
 The artifact supports **offline reproducibility** of all core experimental results without requiring an Android device.
 
+### Reconstructing Split Files
+
+**Note:** Due to GitHub’s 100MB file size limit, large files are split into ~90MB chunks.
+
+To reconstruct any split file, concatenate its parts in order:
+
+```bash
+cat <file>_parts/<file>.part_* > <original_file>
+```
+
+**Examples**
+
+MobileNetV2 spike log:
+```
+cat data/mobilenetv2/spike_log1_parts/spike_log1_part_* > data/mobilenetv2/spike_log1.txt
+```
+
+ResNet18V1 spike log:
+```
+cat data/resnet18v1/spike_log1_parts/spike_log1_part_* > data/resnet18v1/spike_log1.txt
+```
+
+EfficientNet spike log:
+```
+cat data/efficientnet/spike_log1_parts/spike_log1_part_* > data/efficientnet/spike_log1.txt
+```
+
+ExecuTorch ETRecord (ResNet18V1):
+```
+cat models/resnet18_v1_xnnpack_etrecord_parts/resnet18_v1_xnnpack.etrecord.part_* > models/resnet18_v1_xnnpack.etrecord
+```
 ---
 
 ## Repository Structure
