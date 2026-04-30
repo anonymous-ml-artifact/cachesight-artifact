@@ -42,7 +42,7 @@ data/
 
 models/
   ExecuTorch (.pte, .etrecord)
-  ONNX models
+  ONNX models (ResNet18V1, MobileNetV2, EfficientNet-Lite4)
 
 outputs/
   expected_results_MobileNetV2.txt
