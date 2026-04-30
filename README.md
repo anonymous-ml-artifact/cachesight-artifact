@@ -155,7 +155,7 @@ To mitigate this risk, we release only a limited subset of traces necessary for 
 
 Researchers who wish to fully reproduce the dataset can:
 
-1. Run the provided Android pipeline (Section: Full Device Reproduction)
+1. Run the provided Android pipeline (Section 4: Attack Design in the paper)
 2. Collect multiple spike logs (Prime+Probe traces)
 3. Re-run the training script with additional data
 
