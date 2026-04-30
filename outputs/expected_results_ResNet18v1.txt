@@ -1,3 +1,277 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:333aed832cc275c5bda472f5c4032b686acb0f9d0511f1491a2b97211b19a905
-size 14409
+
+For ResNet18V1 training/learning mode:
+
+
+
+[TRAIN] Training on the following pairs:
+   profiling_files/resnet18v1_executorch_layer_timeline2.csv  /  spike_files_execu/ResNet_spike_log2.txt
+   profiling_files/resnet18v1_executorch_layer_timeline3.csv  /  spike_files_execu/ResNet_spike_log3.txt
+   profiling_files/resnet18v1_executorch_layer_timeline4.csv  /  spike_files_execu/ResNet_spike_log4.txt
+   profiling_files/resnet18v1_executorch_layer_timeline5.csv  /  spike_files_execu/ResNet_spike_log5.txt
+   profiling_files/resnet18v1_executorch_layer_timeline6.csv  /  spike_files_execu/ResNet_spike_log6.txt
+   profiling_files/resnet18v1_executorch_layer_timeline7.csv  /  spike_files_execu/ResNet_spike_log7.txt
+   profiling_files/resnet18v1_executorch_layer_timeline8.csv  /  spike_files_execu/ResNet_spike_log8.txt
+   profiling_files/resnet18v1_executorch_layer_timeline9.csv  /  spike_files_execu/ResNet_spike_log9.txt
+[TRAIN] Validation/Test on: profiling_files/resnet18v1_executorch_layer_timeline12.csv / spike_files_execu/ResNet_spike_log12.txt
+Total TRAIN layers (type head):  9016
+Total TRAIN layers (shape head): 9016
+Total TRAIN convs for Cin:       7840
+Total TRAIN convs for Cout:      7840
+
+[SHAPE FEATS] Per-class feature stats (from TRAIN data):
+
+  Class FC  (N=392)
+    log10_dur_us   mean±std =  3.6179 ±  0.0284
+    dens_fixed     mean±std =  0.0141 ±  0.0101
+    dens_adapt     mean±std =  1.0000 ±  0.0000
+    rate_ms        mean±std =  1.4160 ±  1.0210
+    p95_ticks      mean±std =  8.5663 ±  2.0419
+    entropy        mean±std =  0.1101 ±  0.0718
+    mean_max       mean±std =  9.1942 ±  1.1622
+    std_max        mean±std = 15.4181 ± 10.0764
+    concentration  mean±std =  0.0946 ±  0.0723
+    run_pos        mean±std =  0.9536 ±  0.0015
+
+  Class GAP  (N=392)
+    log10_dur_us   mean±std =  1.9946 ±  0.0279
+    dens_fixed     mean±std =  0.0134 ±  0.0474
+    dens_adapt     mean±std =  0.9949 ±  0.0713
+    rate_ms        mean±std =  1.3487 ±  4.6300
+    p95_ticks      mean±std =  8.9515 ±  7.0758
+    entropy        mean±std =  0.0446 ±  0.1558
+    mean_max       mean±std =  9.6030 ±  9.2694
+    std_max        mean±std =  5.9732 ± 26.7385
+    concentration  mean±std =  0.1048 ±  0.0916
+    run_pos        mean±std =  0.9450 ±  0.0017
+
+  Class K1  (N=1176)
+    log10_dur_us   mean±std =  4.0184 ±  0.0297
+    dens_fixed     mean±std =  0.0133 ±  0.0099
+    dens_adapt     mean±std =  0.9998 ±  0.0019
+    rate_ms        mean±std =  1.3360 ±  0.9935
+    p95_ticks      mean±std =  8.4107 ±  2.3215
+    entropy        mean±std =  0.1135 ±  0.0666
+    mean_max       mean±std =  8.8451 ±  0.9786
+    std_max        mean±std = 15.3420 ±  8.1842
+    concentration  mean±std =  0.0916 ±  0.0720
+    run_pos        mean±std =  0.5714 ±  0.1753
+
+  Class K3  (N=6272)
+    log10_dur_us   mean±std =  3.9109 ±  0.1425
+    dens_fixed     mean±std =  0.0119 ±  0.0086
+    dens_adapt     mean±std =  0.9988 ±  0.0166
+    rate_ms        mean±std =  1.1955 ±  0.8623
+    p95_ticks      mean±std =  8.3747 ±  1.9289
+    entropy        mean±std =  0.1005 ±  0.0636
+    mean_max       mean±std =  8.7162 ±  1.0020
+    std_max        mean±std = 13.9607 ±  8.3091
+    concentration  mean±std =  0.0917 ±  0.0720
+    run_pos        mean±std =  0.4911 ±  0.2447
+
+  Class K7  (N=392)
+    log10_dur_us   mean±std =  3.9669 ±  0.0165
+    dens_fixed     mean±std =  0.0049 ±  0.0036
+    dens_adapt     mean±std =  0.9949 ±  0.0173
+    rate_ms        mean±std =  0.4920 ±  0.3641
+    p95_ticks      mean±std =  7.7041 ±  0.6816
+    entropy        mean±std =  0.0454 ±  0.0314
+    mean_max       mean±std =  7.8951 ±  1.6345
+    std_max        mean±std = 12.4536 ± 45.7934
+    concentration  mean±std =  0.0915 ±  0.0732
+    run_pos        mean±std =  0.0335 ±  0.0007
+
+  Class MAXPOOL  (N=392)
+    log10_dur_us   mean±std =  4.0492 ±  0.0196
+    dens_fixed     mean±std =  0.0079 ±  0.0050
+    dens_adapt     mean±std =  0.9924 ±  0.0321
+    rate_ms        mean±std =  0.7910 ±  0.5035
+    p95_ticks      mean±std =  7.8393 ±  0.7584
+    entropy        mean±std =  0.0715 ±  0.0408
+    mean_max       mean±std =  8.1370 ±  0.6587
+    std_max        mean±std = 12.9100 ±  6.8036
+    concentration  mean±std =  0.0906 ±  0.0718
+    run_pos        mean±std =  0.0703 ±  0.0015
+[RF TYPE ] Class counts: {'C': 7840, 'P': 784, 'FC': 392}
+[RF SHAPE] Class counts: {'K7': 392, 'MAXPOOL': 392, 'K3': 6272, 'K1': 1176, 'GAP': 392, 'FC': 392}
+[PCA] Saved 3D kernel-shape PCA plot to resnet18v1_shape_pca_3d.png
+[PCA] Explained variance: PC1=0.404, PC2=0.142, PC3=0.112
+/Volumes/T7_Shield/python_envs/mobilenetv2_pytorch_env/lib/python3.11/site-packages/umap/umap_.py:1952: UserWarning: n_jobs value 1 overridden to 1 by setting random_state. Use no seed for parallelism.
+  warn(
+OMP: Info #276: omp_set_nested routine deprecated, please use omp_set_max_active_levels instead.
+/Volumes/T7_Shield/python_envs/mobilenetv2_pytorch_env/lib/python3.11/site-packages/sklearn/manifold/_spectral_embedding.py:328: UserWarning: Graph is not fully connected, spectral embedding may not work as expected.
+  warnings.warn(
+[UMAP] Saved 2D supervised UMAP plot to resnet18v1_shape_umap_2d.png
+[RF CIN ] Class counts: {'CIN_3': 392, 'CIN_64': 2352, 'CIN_128': 1960, 'CIN_256': 1960, 'CIN_512': 1176}
+[RF COUT] Class counts: {'COUT_64': 1960, 'COUT_128': 1960, 'COUT_256': 1960, 'COUT_512': 1960}
+[DUR PROF] Learned duration profile for 41 layers (sum=266.2 ms)
+
+[TRAIN] Saved models to: resnet18v1_layer_models_rf_cin_cout.joblib
+
+[TRAIN] Now evaluating on held-out pair...
+[TEST] Median cadence ≈ 10.0 µs
+[TEST] FULL runs: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46]
+
+[TYPE] Test set across 47 FULL runs, layers=1081, accuracy=100.0%
+Confusion (GT → Pred):
+    C: 940   0   0   | sum=940
+   FC:   0  47   0   | sum=47
+    P:   0   0  94   | sum=94
+
+[TYPE] First FULL run layer-type sequence:
+   GT: CPCCCCCCCCCCCCCCCCCCCPFC
+  PRD: CPCCCCCCCCCCCCCCCCCCCPFC
+
+[SHAPE] Per-sample kernel-shape accuracy across 47 FULL runs: 90.9%
+Confusion (GT → Pred):
+    FC:  47   0   0   0   0   0  | sum=47
+   GAP:   0  47   0   0   0   0  | sum=47
+    K1:   0   0  43  98   0   0  | sum=141
+    K3:   0   0   0 752   0   0  | sum=752
+    K7:   0   0   0   0  47   0  | sum=47
+  MAXPOOL:   0   0   0   0   0  47  | sum=47
+
+[SHAPE] Majority-vote kernel-shape accuracy over 23 unique layers using 47 FULL runs: 87.0%
+[RAW VIS] Saved raw kernel-shape heatmaps under: raw_shape_latency_plots
+
+[CIN ] Per-sample Cin accuracy across 47 FULL runs: 99.6%
+Confusion (GT → Pred):
+   CIN_128: 235   0   0   0   0  | sum=235
+   CIN_256:   1 232   0   2   0  | sum=235
+     CIN_3:   0   0  46   0   1  | sum=47
+   CIN_512:   0   0   0 141   0  | sum=141
+    CIN_64:   0   0   0   0 282  | sum=282
+
+[CIN ] Majority-vote Cin accuracy over 20 conv layers using 47 FULL runs: 100.0%
+
+[COUT] Per-sample Cout accuracy across 47 FULL runs: 100.0%
+Confusion (GT → Pred):
+  COUT_128: 235   0   0   0  | sum=235
+  COUT_256:   0 235   0   0  | sum=235
+  COUT_512:   0   0 235   0  | sum=235
+   COUT_64:   0   0   0 235  | sum=235
+
+[COUT] Majority-vote Cout accuracy over 20 conv layers using 47 FULL runs: 100.0%
+
+[ABLATION] Impact of number of FULL runs on per-layer majority accuracy:
+  [runs= 1] Type=100.0%  Shape= 91.3%  Cin=100.0%  Cout=100.0%
+  [runs=10] Type=100.0%  Shape= 91.3%  Cin=100.0%  Cout=100.0%
+  [runs=20] Type=100.0%  Shape= 87.0%  Cin=100.0%  Cout=100.0%
+  [runs=30] Type=100.0%  Shape= 87.0%  Cin=100.0%  Cout=100.0%
+
+[RECON] Layer-by-layer ground truth vs predicted (majority over FULL runs):
+idx  T_gt  T_pr  K_gt  K_pr  Cin_gt  Cin_pr  Cout_gt  Cout_pr  name
+  0     C     C    K7    K7       3       3       64       64  conv0_kernel_time
+  1     P     P MAXPOOL MAXPOOL       -       -        -        -  pool0_kernel_time
+  2     C     C    K3    K3      64      64       64       64  stage1.conv0_kernel_time
+  3     C     C    K3    K3      64      64       64       64  stage1.conv1_kernel_time
+  4     C     C    K3    K3      64      64       64       64  stage1.conv2_kernel_time
+  5     C     C    K3    K3      64      64       64       64  stage1.conv3_kernel_time
+  6     C     C    K3    K3      64      64      128      128  stage2.conv0_kernel_time
+  7     C     C    K3    K3     128     128      128      128  stage2.conv1_kernel_time
+  8     C     C    K1    K3      64      64      128      128  stage2.downsample.0_kernel_time
+  9     C     C    K3    K3     128     128      128      128  stage2.conv3_kernel_time
+ 10     C     C    K3    K3     128     128      128      128  stage2.conv4_kernel_time
+ 11     C     C    K3    K3     128     128      256      256  stage3.conv0_kernel_time
+ 12     C     C    K3    K3     256     256      256      256  stage3.conv1_kernel_time
+ 13     C     C    K1    K3     128     128      256      256  stage3.downsample.0_kernel_time
+ 14     C     C    K3    K3     256     256      256      256  stage3.conv3_kernel_time
+ 15     C     C    K3    K3     256     256      256      256  stage3.conv4_kernel_time
+ 16     C     C    K3    K3     256     256      512      512  stage4.conv0_kernel_time
+ 17     C     C    K3    K3     512     512      512      512  stage4.conv1_kernel_time
+ 18     C     C    K1    K3     256     256      512      512  stage4.downsample.0_kernel_time
+ 19     C     C    K3    K3     512     512      512      512  stage4.conv3_kernel_time
+ 20     C     C    K3    K3     512     512      512      512  stage4.conv4_kernel_time
+ 21     P     P   GAP   GAP       -       -        -        -  pool1_kernel_time
+ 22    FC    FC    FC    FC       -       -        -        -  dense0_kernel_time
+
+
+
+
+
+
+
+
+
+
+
+
+
+For ResNet18V1 during attack mode:
+
+[TEST MODE] Loading models from resnet18v1_layer_models_rf_cin_cout.joblib ...
+[TEST MODE] Evaluating on: profiling_files/resnet18v1_executorch_layer_timeline11.csv / spike_files_execu/ResNet_spike_log11.txt
+[TEST] Median cadence ≈ 10.0 µs
+[TEST] FULL runs: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47]
+
+[TYPE] Test set across 48 FULL runs, layers=1104, accuracy=100.0%
+Confusion (GT → Pred):
+    C: 960   0   0   | sum=960
+   FC:   0  48   0   | sum=48
+    P:   0   0  96   | sum=96
+
+[TYPE] First FULL run layer-type sequence:
+   GT: CPCCCCCCCCCCCCCCCCCCCPFC
+  PRD: CPCCCCCCCCCCCCCCCCCCCPFC
+
+[SHAPE] Per-sample kernel-shape accuracy across 48 FULL runs: 91.8%
+Confusion (GT → Pred):
+    FC:  48   0   0   0   0   0  | sum=48
+   GAP:   0  48   0   0   0   0  | sum=48
+    K1:   0   0  56  88   0   0  | sum=144
+    K3:   0   0   3 765   0   0  | sum=768
+    K7:   0   0   0   0  48   0  | sum=48
+  MAXPOOL:   0   0   0   0   0  48  | sum=48
+
+[SHAPE] Majority-vote kernel-shape accuracy over 23 unique layers using 48 FULL runs: 91.3%
+[RAW VIS] Saved raw kernel-shape heatmaps under: raw_shape_latency_plots
+
+[CIN ] Per-sample Cin accuracy across 48 FULL runs: 99.7%
+Confusion (GT → Pred):
+   CIN_128: 240   0   0   0   0  | sum=240
+   CIN_256:   1 239   0   0   0  | sum=240
+     CIN_3:   0   0  48   0   0  | sum=48
+   CIN_512:   0   2   0 142   0  | sum=144
+    CIN_64:   0   0   0   0 288  | sum=288
+
+[CIN ] Majority-vote Cin accuracy over 20 conv layers using 48 FULL runs: 100.0%
+
+[COUT] Per-sample Cout accuracy across 48 FULL runs: 100.0%
+Confusion (GT → Pred):
+  COUT_128: 240   0   0   0  | sum=240
+  COUT_256:   0 240   0   0  | sum=240
+  COUT_512:   0   0 240   0  | sum=240
+   COUT_64:   0   0   0 240  | sum=240
+
+[COUT] Majority-vote Cout accuracy over 20 conv layers using 48 FULL runs: 100.0%
+
+[ABLATION] Impact of number of FULL runs on per-layer majority accuracy:
+  [runs= 1] Type=100.0%  Shape= 91.3%  Cin=100.0%  Cout=100.0%
+  [runs=10] Type=100.0%  Shape= 87.0%  Cin=100.0%  Cout=100.0%
+  [runs=20] Type=100.0%  Shape= 91.3%  Cin=100.0%  Cout=100.0%
+  [runs=30] Type=100.0%  Shape= 91.3%  Cin=100.0%  Cout=100.0%
+
+[RECON] Layer-by-layer ground truth vs predicted (majority over FULL runs):
+idx  T_gt  T_pr  K_gt  K_pr  Cin_gt  Cin_pr  Cout_gt  Cout_pr  name
+  0     C     C    K7    K7       3       3       64       64  conv0_kernel_time
+  1     P     P MAXPOOL MAXPOOL       -       -        -        -  pool0_kernel_time
+  2     C     C    K3    K3      64      64       64       64  stage1.conv0_kernel_time
+  3     C     C    K3    K3      64      64       64       64  stage1.conv1_kernel_time
+  4     C     C    K3    K3      64      64       64       64  stage1.conv2_kernel_time
+  5     C     C    K3    K3      64      64       64       64  stage1.conv3_kernel_time
+  6     C     C    K3    K3      64      64      128      128  stage2.conv0_kernel_time
+  7     C     C    K3    K3     128     128      128      128  stage2.conv1_kernel_time
+  8     C     C    K1    K3      64      64      128      128  stage2.downsample.0_kernel_time
+  9     C     C    K3    K3     128     128      128      128  stage2.conv3_kernel_time
+ 10     C     C    K3    K3     128     128      128      128  stage2.conv4_kernel_time
+ 11     C     C    K3    K3     128     128      256      256  stage3.conv0_kernel_time
+ 12     C     C    K3    K3     256     256      256      256  stage3.conv1_kernel_time
+ 13     C     C    K1    K3     128     128      256      256  stage3.downsample.0_kernel_time
+ 14     C     C    K3    K3     256     256      256      256  stage3.conv3_kernel_time
+ 15     C     C    K3    K3     256     256      256      256  stage3.conv4_kernel_time
+ 16     C     C    K3    K3     256     256      512      512  stage4.conv0_kernel_time
+ 17     C     C    K3    K3     512     512      512      512  stage4.conv1_kernel_time
+ 18     C     C    K1    K1     256     256      512      512  stage4.downsample.0_kernel_time
+ 19     C     C    K3    K3     512     512      512      512  stage4.conv3_kernel_time
+ 20     C     C    K3    K3     512     512      512      512  stage4.conv4_kernel_time
+ 21     P     P   GAP   GAP       -       -        -        -  pool1_kernel_time
+ 22    FC    FC    FC    FC       -       -        -        -  dense0_kernel_time
