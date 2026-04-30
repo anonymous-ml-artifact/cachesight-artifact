@@ -136,7 +136,7 @@ To remain within these constraints, we include a **single representative spike l
 
 - demonstrate the full pipeline
 - validate alignment and feature extraction
-- reproduce the training and evaluation process
+- explain the training and evaluation process
 
 ### Reason 2: Responsible Disclosure
 
