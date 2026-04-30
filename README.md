@@ -9,11 +9,12 @@ This repository contains the artifacts required to reproduce the core results of
 
 This artifact includes:
 
-- ExecuTorch layer profiling reconstruction pipeline (ETDump → layer timeline)
-- Cache side-channel data (Prime+Probe spike logs)
-- ONNX reference profiling traces
-- Native Prime+Probe code
-- Training and evaluation scripts for:
+- ExecuTorch layer profiling reconstruction pipeline (ETDump → layer timeline) (scripts/run_and_collect_executorch.sh)
+- Cache side-channel data (Prime+Probe spike logs) (e.g., data/mobilenetv2/spike_log1.txt)
+- ONNX reference profiling traces (e.g., data/mobilenetv2/onnx.json)
+- ExecuTorch profiling traces (data/executorch_layer_timeline1.csv)
+- Native Prime+Probe code (scripts/resnet18v1/prime_probe.c)
+- Training and evaluation scripts (scripts/train_predict_layers_with_size.py) for:
   - Layer type prediction
   - Kernel shape prediction
   - Input/output channel (Cin/Cout) prediction
@@ -38,7 +39,7 @@ scripts/
 data/
   mobilenetv2/
   resnet18v1/
-  resnet18v1/
+  efficientnet/
 
 models/
   ExecuTorch (.pte, .etrecord)
