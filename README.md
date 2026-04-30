@@ -1,79 +1,32 @@
-# Android DNN Side-Channel Artifact
+# Artifact for CCS 2026 Submission
 
-This repository contains the source code and artifacts required to reproduce the cache side-channel analysis and DNN architecture reconstruction pipeline described in the accompanying paper.
+This repository contains the artifacts for evaluating our Android cache-side-channel analysis pipeline for reconstructing DNN layer architectures from ExecuTorch inference.
 
-The artifact is organized to separate source code, input data, and model-related files.
+## Contents
+- Android ExecuTorch apps for MobileNetV2 and ResNet18V1
+- Native Prime+Probe code
+- ExecuTorch ETDump profiling pipeline
+- ETDump-to-layer relabeling scripts
+- ONNX reference profiling traces
+- Sample spike logs and profiling files
+- Training/evaluation script for layer type, kernel shape, Cin, and Cout prediction
 
----
+## Artifact claims
+The artifact supports:
+1. Reproducing ExecuTorch layer timeline extraction.
+2. Reproducing ETDump-to-semantic-layer relabeling.
+3. Reproducing cache trace alignment.
+4. Training/testing classifiers for layer type, kernel shape, Cin, and Cout.
+5. Reproducing sample results for MobileNetV2 and ResNet18V1.
 
-## Directory Structure
-```text
-src/
-├── prime_probe.c
-├── cache_sets.h
-├── compute_hot_functions_cache_sets.py
-└── train_predict_layers_with_size.py
+## Hardware requirements
+- Google Pixel 7a or comparable rooted Android device.
+- Linux/macOS host with ADB.
+- Python 3.10+.
+- Android Studio/Gradle for rebuilding apps.
+- Root access required only for collecting perf/pagemap information and Prime+Probe setup.
 
-data/
-├── spike_files/
-├── perf_report.txt
-├── maps.txt
-└── pagemap.bin
-
-models/
-└── onnx_files/
-    ├── onnx_aligned1.json
-    └── onnx_aligned2.json
-```
-
-
----
-
-## Requirements
-
-- Ubuntu Linux (recommended)
-- Python 3.9+
-- GCC or Clang
-
-Python dependencies (if required):
+## Quick offline reproduction
+Run:
 ```bash
-pip install numpy pandas scikit-learn
-```
-
-Build Instructions
-
-Compile the Prime+Probe binary:
-
-```
-gcc -O2 -o prime_probe src/prime_probe.c
-```
-
-Usage
-1. Cache Set Identification
-   ```
-   python3 src/compute_hot_functions_cache_sets.py
-   ```
-   This script identifies cache sets corresponding to target functions using memory mappings and pagemap information.
-2. Spike Processing and Layer Reconstruction
-   ```
-   python3 src/train_predict_layers_with_size.py
-   ```
-   This script reconstructs the DNN layer sequence and dimensions using cache-access traces and aligned ONNX profiling data.
-
-
-## Input data
-
-Cache access traces and spike logs are located in data/
-
-ONNX profiling/alignment JSON files are located in models/onnx_files/
-
-Paths can be adjusted inside the scripts if needed.
-
-
-## Notes
-
-The artifact is provided for reproducibility and evaluation purposes.
-
-Example files are included, large raw traces may be omitted or downsampled.
-
-All identifiers in the repository are anonymized.
+python src/training/train_predict_layers_with_size.py

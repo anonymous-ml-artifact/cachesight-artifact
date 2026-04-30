@@ -12,7 +12,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 from sklearn.decomposition import PCA
 import matplotlib
-matplotlib.use("Agg")          # safe for headless servers
+matplotlib.use("Agg")          
 import matplotlib.pyplot as plt
 # NEW:
 import umap
@@ -27,7 +27,7 @@ import umap
 #   "spike_only"   -> test layer heads using spike-only segmentation (needs ONNX only for run start/end)
 
 MODE = "spike_only"
-MODEL_PATH = "layer_models_rf_cin_cout.joblib"
+MODEL_PATH = "resnet18v1_layer_models_rf_cin_cout.joblib"
 
 # Where to store the model-identity classifier (RF on spike-only features)
 MODEL_ID_PATH = "model_classifier_rf.joblib"
@@ -35,27 +35,21 @@ MODEL_ID_PATH = "model_classifier_rf.joblib"
 
 JSON_FILE  = "cache_2025-12-01_18-52-05_onnx_aligned.json"
 SPIKE_FILE = "spike_log.txt"
-HOT_SETS   = [1676, 1684, 9845, 3147, 7845, 3144, 3146, 3179, 3183, 1685]
+HOT_SETS   = [11644, 8735, 6434, 8481, 12850, 6710, 6711, 6713, 6715, 6688]
 
 TRAIN_PAIRS = [
-    # ("cache_2025-11-06_23-09-37_onnx_aligned1.json", "spike_log1.txt"),
-    ("onnx_files/onnx_aligned1.json", "spike_files/spike_log1.txt"),
-    ("onnx_files/onnx_aligned2.json", "spike_files/spike_log2.txt"),
-    ("onnx_files/onnx_aligned3.json", "spike_files/spike_log3.txt"),
-    ("onnx_files/onnx_aligned4.json", "spike_files/spike_log4.txt"),
-    ("onnx_files/onnx_aligned5.json", "spike_files/spike_log5.txt"),
-    ("onnx_files/onnx_aligned6.json", "spike_files/spike_log6.txt"),
-    ("onnx_files/onnx_aligned7.json", "spike_files/spike_log7.txt"),
-    ("onnx_files/onnx_aligned8.json", "spike_files/spike_log8.txt"),
-    ("onnx_files/onnx_aligned9.json", "spike_files/spike_log9.txt"),
-    ("onnx_files/onnx_aligned10.json", "spike_files/spike_log10.txt"),
-    ("onnx_files/onnx_aligned11.json", "spike_files/spike_log11.txt"),
-    ("onnx_files/onnx_aligned12.json", "spike_files/spike_log12.txt"),
-    ("onnx_files/onnx_aligned13.json", "spike_files/spike_log13.txt"),
-    ("onnx_files/onnx_aligned14.json", "spike_files/spike_log14.txt"),
-    ("onnx_files/onnx_aligned15.json", "spike_files/spike_log15.txt"),
-    #("onnx_files/onnx_aligned16.json", "spike_files/spike_log16.txt"),
-    #("onnx_files/onnx_aligned16.json", "spike_files/spike_log16.txt"),
+    #("profiling_files/resnet18v1_executorch_layer_timeline1.csv",  "spike_files_execu/ResNet_spike_log1.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline13.csv",  "spike_files_execu/ResNet_spike_log13.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline14.csv",  "spike_files_execu/ResNet_spike_log14.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline15.csv",  "spike_files_execu/ResNet_spike_log15.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline16.csv",  "spike_files_execu/ResNet_spike_log16.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline17.csv",  "spike_files_execu/ResNet_spike_log17.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline18.csv",  "spike_files_execu/ResNet_spike_log18.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline19.csv",  "spike_files_execu/ResNet_spike_log19.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline20.csv",  "spike_files_execu/ResNet_spike_log20.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline21.csv",  "spike_files_execu/ResNet_spike_log21.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline22.csv",  "spike_files_execu/ResNet_spike_log22.txt"),
+    # add the rest similarly
 
 ]
 
@@ -66,20 +60,14 @@ TRAIN_PAIRS = [
 # In TEST mode:
 #   - We IGNORE TRAIN_PAIRS content and ONLY test on TEST_PAIR (must be set)
 #TEST_PAIR = None
-TEST_PAIR = ("onnx_files/onnx_aligned16.json", "spike_files/spike_log16.txt")
+TEST_PAIR = ("profiling_files/resnet18v1_executorch_layer_timeline23.csv", "spike_files_execu/ResNet_spike_log23.txt")
 
 
 # ======= Model-level (spike-only) classifier config =======
 # Each entry in MODEL_TRAIN_SETS / MODEL_TEST_SETS is:
 #     (label_string, spike_log_path)
 #
-# Example (we will fill in real paths):
-# MODEL_TRAIN_SETS = [
-#     ("MobileNetV2",      "../MobileNetV2TFLiteApp/spike_files/spike_log1.txt"),
-#     ("MobileNetV2",      "../MobileNetV2TFLiteApp/spike_files/spike_log2.txt"),
-#     ("EfficientNet-Lite4","spike_files/spike_log1.txt"),
-#     ("EfficientNet-Lite4","spike_files/spike_log2.txt"),
-# ]
+# 
 #
 # For MODEL_TEST_SETS we can use ONNX or TFLite traces.
 # If label is None, we only print predictions (no accuracy).
@@ -136,26 +124,233 @@ MODEL_TEST_SETS = [
 
 COVERAGE_THRESHOLD = 0.85
 FIXED_TICKS = 20
-ADAPT_K     = 4.0          # keep whatever worked best
-ONLY_KERNEL_ROWS  = True   # keep "kernel_time" rows
+ADAPT_K     = 4.0          
+ONLY_KERNEL_ROWS  = True   
 ONLY_CPU_PROVIDER = True   # True = CPUExecutionProvider only
 
 RNG_SEED = 7
 
 # ======= helpers =======
+
+#Executorch MobileNetV2 layer dimention mapping
+MOBILENETV2_LAYER_DIMS = {
+    "features.0.0":      (3, 32),
+
+    "features.1.conv.0": (32, 32),
+    "features.1.conv.3": (32, 16),
+
+    "features.2.conv.0": (16, 96),
+    "features.2.conv.3": (96, 96),
+    "features.2.conv.6": (96, 24),
+
+    "features.3.conv.0": (24, 144),
+    "features.3.conv.3": (144, 144),
+    "features.3.conv.6": (144, 24),
+
+    "features.4.conv.0": (24, 144),
+    "features.4.conv.3": (144, 144),
+    "features.4.conv.6": (144, 32),
+
+    "features.5.conv.0": (32, 192),
+    "features.5.conv.3": (192, 192),
+    "features.5.conv.6": (192, 32),
+
+    "features.6.conv.0": (32, 192),
+    "features.6.conv.3": (192, 192),
+    "features.6.conv.6": (192, 32),
+
+    "features.7.conv.0": (32, 192),
+    "features.7.conv.3": (192, 192),
+    "features.7.conv.6": (192, 64),
+
+    "features.8.conv.0": (64, 384),
+    "features.8.conv.3": (384, 384),
+    "features.8.conv.6": (384, 64),
+
+    "features.9.conv.0": (64, 384),
+    "features.9.conv.3": (384, 384),
+    "features.9.conv.6": (384, 64),
+
+    "features.10.conv.0": (64, 384),
+    "features.10.conv.3": (384, 384),
+    "features.10.conv.6": (384, 64),
+
+    "features.11.conv.0": (64, 384),
+    "features.11.conv.3": (384, 384),
+    "features.11.conv.6": (384, 96),
+
+    "features.12.conv.0": (96, 576),
+    "features.12.conv.3": (576, 576),
+    "features.12.conv.6": (576, 96),
+
+    "features.13.conv.0": (96, 576),
+    "features.13.conv.3": (576, 576),
+    "features.13.conv.6": (576, 96),
+
+    "features.14.conv.0": (96, 576),
+    "features.14.conv.3": (576, 576),
+    "features.14.conv.6": (576, 160),
+
+    "features.15.conv.0": (160, 960),
+    "features.15.conv.3": (960, 960),
+    "features.15.conv.6": (960, 160),
+
+    "features.16.conv.0": (160, 960),
+    "features.16.conv.3": (960, 960),
+    "features.16.conv.6": (960, 160),
+
+    "features.17.conv.0": (160, 960),
+    "features.17.conv.3": (960, 960),
+    "features.17.conv.6": (960, 320),
+
+    "features.18.0":      (320, 1280),
+}
+
+
+
+RESNET18V1_LAYER_DIMS = {
+    "conv0": (3, 64),
+
+    "stage1.conv0": (64, 64),
+    "stage1.conv1": (64, 64),
+    "stage1.conv2": (64, 64),
+    "stage1.conv3": (64, 64),
+
+    "stage2.conv0": (64, 128),
+    "stage2.conv1": (128, 128),
+    "stage2.downsample.0": (64, 128),
+    "stage2.conv3": (128, 128),
+    "stage2.conv4": (128, 128),
+
+    "stage3.conv0": (128, 256),
+    "stage3.conv1": (256, 256),
+    "stage3.downsample.0": (128, 256),
+    "stage3.conv3": (256, 256),
+    "stage3.conv4": (256, 256),
+
+    "stage4.conv0": (256, 512),
+    "stage4.conv1": (512, 512),
+    "stage4.downsample.0": (256, 512),
+    "stage4.conv3": (512, 512),
+    "stage4.conv4": (512, 512),
+}
+
+
 def prefer(keys, d, default=None):
     for k in keys:
         if k in d: return d[k]
     return default
 
-def load_events(json_path):
-    with open(json_path,"r") as f:
-        data=json.load(f)
-    if isinstance(data,list):
-        events=data; top={}
+
+
+def make_execu_op_type(kernel_tag, semantic_role, event_name):
+    k = (kernel_tag or "").upper()
+    e = (event_name or "").lower()
+
+    if k in ("K7", "K3", "K1", "FC", "GAP", "MAXPOOL", "FLATTEN", "RELU", "ADD", "TRANSPOSE"):
+        return k
+
+    if "clamp" in e:
+        return "RELU"
+    if "max pool" in e or "maxpool" in e:
+        return "MAXPOOL"
+    if "mean" in e or "average" in e:
+        return "GAP"
+    if "flatten" in e:
+        return "FLATTEN"
+    if "gemm" in e or "fully connected" in e:
+        return "FC"
+    if "convolution" in e or "igemm" in e:
+        return "K3"
+    if "add" in e:
+        return "ADD"
+    if "transpose" in e:
+        return "TRANSPOSE"
+
+    return "OTHER"
+
+
+def load_events_executorch_csv(csv_path):
+    import pandas as pd
+
+    df = pd.read_csv(csv_path)
+    df = df.sort_values(["inference_index", "op_index"]).reset_index(drop=True)
+
+    out = []
+
+    # 1) synthetic run events so detect_runs() still works unchanged
+    run_df = (
+        df[["inference_index", "inference_ts_start_ns", "inference_ts_end_ns"]]
+        .drop_duplicates()
+        .sort_values("inference_index")
+    )
+
+    for _, r in run_df.iterrows():
+        rs_us = int(r["inference_ts_start_ns"]) // 1000
+        re_us = int(r["inference_ts_end_ns"]) // 1000
+        out.append({
+            "start": rs_us,
+            "end": re_us,
+            "dur": re_us - rs_us,
+            "name": "model_run",
+            "op_type": "RUN",
+            "provider": "",
+            "args": {},
+            "inference_index": int(r["inference_index"]),
+        })
+
+    # 2) actual layer events
+    for _, r in df.iterrows():
+        sem_name = str(r.get("semantic_layer_name", ""))
+        kernel_tag = str(r.get("kernel_tag", ""))
+        semantic_role = str(r.get("semantic_role", ""))
+        event_name = str(r.get("event_name", ""))
+
+        start_us = int(r["absolute_monotonic_start_ns"]) // 1000
+        end_us   = int(r["absolute_monotonic_end_ns"]) // 1000
+        dur_us   = end_us - start_us
+
+        op_type = make_execu_op_type(kernel_tag, semantic_role, event_name)
+
+        args = {}
+        if sem_name in RESNET18V1_LAYER_DIMS:
+            cin, cout = RESNET18V1_LAYER_DIMS[sem_name]
+            args = {
+                "input_type_shape":  [{"float": [1, cin, 1, 1]}],
+                "output_type_shape": [{"float": [1, cout, 1, 1]}],
+            }
+
+        out.append({
+            "start": start_us,
+            "end": end_us,
+            "dur": dur_us,
+            "name": sem_name + "_kernel_time",
+            "op_type": op_type,
+            "provider": "CPUExecutionProvider",
+            "args": args,
+            "inference_index": int(r["inference_index"]),
+            "event_name": event_name,
+            "kernel_tag": kernel_tag,
+            "semantic_role": semantic_role,
+        })
+
+    out.sort(key=lambda x: x["start"])
+    return out
+
+
+def load_events(path):
+    path_l = path.lower()
+    if path_l.endswith(".csv"):
+        return load_events_executorch_csv(path)
+
+    with open(path, "r") as f:
+        data = json.load(f)
+    if isinstance(data, list):
+        events = data
+        top = {}
     else:
-        events=data.get("events") or data.get("traceEvents") or data.get("Timeline") or []
-        top=data
+        events = data.get("events") or data.get("traceEvents") or data.get("Timeline") or []
+        top = data
 
     base_us = prefer([
         "profiling_start_ts",
@@ -164,65 +359,67 @@ def load_events(json_path):
         "profiling_start_mono_us"
     ], top, None)
 
-    out=[]
+    out = []
     for e in events:
-        if not isinstance(e,dict):
+        if not isinstance(e, dict):
             continue
-        ph=e.get("ph")
-        if ph and ph!="X":
+        ph = e.get("ph")
+        if ph and ph != "X":
             continue
 
-        dur=prefer(["dur","dur_us"], e, None)
+        dur = prefer(["dur", "dur_us"], e, None)
         if dur is None:
             continue
         try:
-            dur=int(dur)
+            dur = int(dur)
         except:
             try:
-                dur=int(float(dur))
+                dur = int(float(dur))
             except:
                 continue
-        if dur<=0:
+        if dur <= 0:
             continue
 
-        ts_abs = prefer(["ts_abs_us","ts_abs","ts_absolute_us","ts_boot_us","ts_mono_us"], e, None)
+        ts_abs = prefer(["ts_abs_us", "ts_abs", "ts_absolute_us", "ts_boot_us", "ts_mono_us"], e, None)
         if ts_abs is None:
-            ts_rel = prefer(["ts","ts_us"], e, None)
+            ts_rel = prefer(["ts", "ts_us"], e, None)
             if ts_rel is None:
                 continue
             try:
-                ts_rel=int(ts_rel)
+                ts_rel = int(ts_rel)
             except:
                 try:
-                    ts_rel=int(float(ts_rel))
+                    ts_rel = int(float(ts_rel))
                 except:
                     continue
             if base_us is None:
                 ts_abs = ts_rel
             else:
                 ts_abs = base_us + ts_rel
+
         try:
-            ts_abs=int(ts_abs)
+            ts_abs = int(ts_abs)
         except:
             try:
-                ts_abs=int(float(ts_abs))
+                ts_abs = int(float(ts_abs))
             except:
                 continue
 
-        name = prefer(["name","op_name","node","node_name"], e, "")
-        op_type = prefer(["op_type","type","op"], e, "")
-        args=e.get("args") or {}
-        provider=args.get("provider") or ""
+        name = prefer(["name", "op_name", "node", "node_name"], e, "")
+        op_type = prefer(["op_type", "type", "op"], e, "")
+        args = e.get("args") or {}
+        provider = args.get("provider") or ""
 
         out.append({
             "start": int(ts_abs),
-            "end":   int(ts_abs)+dur,
-            "dur":   int(dur),
-            "name":  str(name),
+            "end": int(ts_abs) + dur,
+            "dur": int(dur),
+            "name": str(name),
             "op_type": str(op_type),
             "provider": str(provider),
-            "args": args,  # keep args for Cin/Cout extraction
+            "args": args,
         })
+
     out.sort(key=lambda x: x["start"])
     return out
 
@@ -302,9 +499,24 @@ def rows_in_window(events, start, end, only_kernel, only_cpu):
     return out
 
 def label_from_op(op_type, name):
-    n=(name or "").lower()
-    o=(op_type or "").lower()
+    n = (name or "").lower()
+    o = (op_type or "").lower()
 
+    # ---- ExecuTorch CSV path for ResNet18 ----
+    if o in ("k7", "k3", "k1"):
+        return "C"
+    if o == "fc":
+        return "FC"
+    if o in ("gap", "maxpool"):
+        return "P"
+    if o == "flatten":
+        return "F"
+
+    # We do not want to consider residual_add or relu layers.
+    if o in ("add", "relu", "transpose", "other"):
+        return "O"
+
+    # ---- original ONNX path ----
     if "reducemean" in n or "reducemean" in o:
         return "P"
     if "sub" in n or "div" in n or "sub" in o or "div" in o:
@@ -312,8 +524,6 @@ def label_from_op(op_type, name):
     if "gemm" in n or "gemm" in o or "matmul" in n or "matmul" in o or "fc" in n:
         return "FC"
     if "conv" in n or "conv" in o:
-        if "depthwise" in n or "depthwise" in o or "depth_conv" in n or "depth_conv" in o or "dw" in n:
-            return "DW"
         return "C"
     if "pool" in n or "pool" in o:
         return "P"
@@ -324,6 +534,20 @@ def label_from_op(op_type, name):
     if "batchnorm" in n or "batchnorm" in o or "bn" in n:
         return "BN"
     return "O"
+
+def skip_type_layer(op_type, name):
+    n = (name or "").lower()
+    o = (op_type or "").lower()
+
+    # Exclude residual/add, ReLU/clamp, layout transforms, and unknown ops.
+    if o in ("add", "relu", "transpose", "other"):
+        return True
+
+    if "residual_add" in n or "relu" in n or "clamp" in n:
+        return True
+
+    return False
+
 
 def kernel_shape_from_name(op_type: str, name: str) -> str:
     """
@@ -337,7 +561,21 @@ def kernel_shape_from_name(op_type: str, name: str) -> str:
     """
     n = (name or "").lower()
     o = (op_type or "").lower()
+        
+    # Special-case the final pointwise conv in MobileNetV2
+    if "features.18.0_kernel_time" in n:
+        return "K1PW"
+    
+    # ---- ExecuTorch CSV path for ResNet18 ----
+    if o in ("k7", "k3", "k1", "fc", "gap", "maxpool", "flatten"):
+        return o.upper()
 
+    # Exclude these from shape head
+    if o in ("add", "relu", "transpose", "other"):
+        return "O"
+
+
+    # ---- original ONNX path ----
     if "gemm" in n or "gemm" in o or "matmul" in n or "matmul" in o or "fc" in n:
         return "FC"
     if "reducemean" in n or "globalaveragepool" in n or "global_average_pool" in n:
@@ -408,7 +646,7 @@ def robust_median(vals):
     return vals[len(vals)//2]
 
 def robust_filter_mad(vals, k=3.5):
-    """Remove outliers using MAD; returns filtered list."""
+    
     vals = [v for v in vals if v is not None]
     if len(vals) < 5:
         return vals
@@ -428,7 +666,7 @@ def build_duration_profile_from_training(train_pairs):
       - dur_profile_us: list[int] length = #layers
       - cum_profile_frac: list[float] cumulative fractions (same length)
     """
-    durs_by_pos = defaultdict(list)   # pos -> [dur_us,...]
+    durs_by_pos = defaultdict(list)   
     max_pos = -1
 
     for json_path, spike_path in train_pairs:
@@ -778,20 +1016,26 @@ def extract_features_for_pair_spike_only(json_path, spike_path, dur_profile_us):
             ] + p + mean_set + [run_pos]
 
             # --- GT label by position ---
+           
+
             L = layers_gt[layer_idx]
             lbl = label_from_op(L["op_type"], L["name"])
-            X_all.append(feats)
-            Y_all.append(lbl)
-            meta_all.append((ridx, layer_idx, L["name"], L["op_type"], dur_us, s_us, e_us))
+            if not skip_type_layer(L["op_type"], L["name"]):
+                X_all.append(feats)
+                Y_all.append(lbl)
+                meta_all.append((ridx, layer_idx, L["name"], L["op_type"], dur_us, s_us, e_us))
 
             shape_lbl = kernel_shape_from_name(L["op_type"], L["name"])
-            if shape_lbl in ("K1","K3","K3DW","GAP","FC","K?"):
+            # if shape_lbl in ("K1","K3","K3DW","GAP","FC","K?"):
+            
+            if shape_lbl in ("K7", "K3", "K1", "MAXPOOL", "GAP", "FLATTEN", "FC"):
                 X_sh.append(feats)
                 Y_sh.append(shape_lbl)
                 meta_sh.append((ridx, layer_idx, L["name"], L["op_type"], dur_us, s_us, e_us))
 
             # Cin/Cout (still extracted from ONNX args, but window is spike-only)
-            if shape_lbl in ("K1","K3","K3DW"):
+           
+            if shape_lbl in ("K7", "K3", "K1"):
                 cin = cout = None
                 args = L.get("args", {}) or {}
                 in_shapes  = args.get("input_type_shape")  or []
@@ -932,13 +1176,18 @@ def extract_features_for_pair(json_path, spike_path):
                 conc,
             ] + p + mean_set + [run_pos]
 
+
+
             lbl = label_from_op(L["op_type"], L["name"])
-            X_all.append(feats)
-            Y_all.append(lbl)
-            meta_all.append((ridx, layer_idx, L["name"], L["op_type"], L["dur"]))
+            if not skip_type_layer(L["op_type"], L["name"]):
+                X_all.append(feats)
+                Y_all.append(lbl)
+                meta_all.append((ridx, layer_idx, L["name"], L["op_type"], L["dur"]))
 
             shape_lbl = kernel_shape_from_name(L["op_type"], L["name"])
-            if shape_lbl in ("K1","K3","K3DW","GAP","FC","K?"):
+            # if shape_lbl in ("K1","K3","K3DW","GAP","FC","K?"):
+            # if shape_lbl in ("K1","K1PW","K3","K3DW","GAP","FC","K?"):
+            if shape_lbl in ("K7", "K3", "K1", "MAXPOOL", "GAP", "FLATTEN", "FC"):
                 X_sh.append(feats)
                 Y_sh.append(shape_lbl)
                 #meta_sh.append((ridx, layer_idx, L["name"], L["op_type"], L["dur"]))
@@ -946,7 +1195,8 @@ def extract_features_for_pair(json_path, spike_path):
 
 
             # --- Cin / Cout extraction: only for convs (K1/K3/K3DW) ---
-            if shape_lbl in ("K1","K3","K3DW"):
+           
+            if shape_lbl in ("K7", "K3", "K1"):
                 cin = cout = None
                 args = L.get("args", {}) or {}
                 in_shapes  = args.get("input_type_shape")  or []
@@ -1041,16 +1291,13 @@ def summarize_shape_feature_ranges(X_sh, Y_sh):
                 std_val = statistics.stdev(vals)
             else:
                 std_val = 0.0
-            # if we still want min/max, compute them here:
-            # mn = min(vals)
-            # mx = max(vals)
-            # print(f"    {fname:14s} mean={mean_val:9.4f}  std={std_val:9.4f}  "
-            #       f"min={mn:9.4f}  max={mx:9.4f}")
+           
+     
             print(f"    {fname:14s} mean±std = {mean_val:7.4f} ± {std_val:7.4f}")
 
 
 def plot_shape_pca(X_sh, Y_sh, mu_sh=None, sd_sh=None,
-                   out_path="mobilenetv2_shape_pca_3d.png"):
+                   out_path="resnet18v1_shape_pca_3d.png"):
     """
     3D PCA visualization of kernel-shape training features,
     using ONLY the 10 interpretable scalar features:
@@ -1108,30 +1355,33 @@ def plot_shape_pca(X_sh, Y_sh, mu_sh=None, sd_sh=None,
 
     # map internal labels to human-readable labels
     label_mapping = {
-        "K1": "1x1 Conv",
+        "K7": "7x7 Conv",
         "K3": "3x3 Conv",
-        "K3DW": "3x3 DW Conv",
-        "K?": "1x1 PW Conv",  # as per description
+        "K1": "1x1 Conv",
+        "MAXPOOL": "MaxPool",
+        "GAP": "Global AvgPool",
+        "FLATTEN": "Flatten",
         "FC": "FC",
-        "GAP": "GAP",
     }
     
     # Color / marker per kernel shape
     colors = {
-        "FC":   "tab:red",
-        "GAP":  "tab:purple",
-        "K1":   "tab:blue",
-        "K3":   "tab:orange",
-        "K3DW": "tab:green",
-        "K?":   "tab:gray",
+        "K7": "tab:cyan",
+        "K3": "tab:orange",
+        "K1": "tab:blue",
+        "MAXPOOL": "tab:green",
+        "GAP": "tab:purple",
+        "FLATTEN": "tab:gray",
+        "FC": "tab:red",
     }
     markers = {
-        "FC":   "s",
-        "GAP":  "D",
-        "K1":   "o",
-        "K3":   "^",
-        "K3DW": "v",
-        "K?":   "x",
+        "K7": "P",
+        "K3": "^",
+        "K1": "o",
+        "MAXPOOL": "v",
+        "GAP": "D",
+        "FLATTEN": "x",
+        "FC": "s",
     }
 
     labels = sorted(set(Y_sh_plot))
@@ -1174,7 +1424,7 @@ def plot_shape_pca(X_sh, Y_sh, mu_sh=None, sd_sh=None,
 def plot_shape_umap(
     X_sh,
     Y_sh,
-    out_path="mobilenetv2_shape_umap_2d.png",
+    out_path="resnet18v1_shape_umap_2d.png",
     scalar_only=True,
     use_pca=True,
     pca_dim=10,
@@ -1216,7 +1466,7 @@ def plot_shape_umap(
     sd[sd == 0.0] = 1.0
     Z = (X - mu) / sd
 
-    # ---- 3) optional PCA pre-step ----
+    # ---- 3)  PCA pre-step ----
     if use_pca and Z.shape[1] > pca_dim:
         k = min(pca_dim, Z.shape[1])
         pca = PCA(n_components=k, random_state=RNG_SEED)
@@ -1247,30 +1497,33 @@ def plot_shape_umap(
     emb = reducer.fit_transform(Z_red, y=y_enc)
     # map internal labels to human-readable labels
     label_mapping = {
-        "K1": "1x1 Conv",
+        "K7": "7x7 Conv",
         "K3": "3x3 Conv",
-        "K3DW": "3x3 DW Conv",
-        "K?": "1x1 PW Conv",  # as per description
+        "K1": "1x1 Conv",
+        "MAXPOOL": "MaxPool",
+        "GAP": "Global AvgPool",
+        "FLATTEN": "Flatten",
         "FC": "FC",
-        "GAP": "GAP",
     }
 
     # ---- 5) plot ----
     colors = {
-        "FC":   "tab:red",
-        "GAP":  "tab:purple",
-        "K1":   "tab:blue",
-        "K3":   "tab:orange",
-        "K3DW": "tab:green",
-        "K?":   "tab:gray",
+        "K7": "tab:cyan",
+        "K3": "tab:orange",
+        "K1": "tab:blue",
+        "MAXPOOL": "tab:green",
+        "GAP": "tab:purple",
+        "FLATTEN": "tab:gray",
+        "FC": "tab:red",
     }
     markers = {
-        "FC":   "s",
-        "GAP":  "D",
-        "K1":   "o",
-        "K3":   "^",
-        "K3DW": "v",
-        "K?":   "x",
+        "K7": "P",
+        "K3": "^",
+        "K1": "o",
+        "MAXPOOL": "v",
+        "GAP": "D",
+        "FLATTEN": "x",
+        "FC": "s",
     }
 
     labels = sorted(set(Y_sh))
@@ -1335,10 +1588,10 @@ def plot_raw_latency_heatmaps_by_shape(
     SHAPE_LABELS = {
         "FC": "FC layer",
         "GAP": "global average pooling",
+        "MAXPOOL": "max pooling",
+        "FLATTEN": "flatten",
         "K1": "1×1 Conv",
         "K3": "3×3 Conv",
-        "K3DW": "3×3 Depthwise Conv",
-        "K?": "1×1 Pointwise Conv",
         "K7": "7×7 Conv",
     }
 
@@ -1349,7 +1602,7 @@ def plot_raw_latency_heatmaps_by_shape(
         return
     ts_list = [r["ts"] for r in spikes]
 
-    # Choose a subset of runs (avoid using all 47/50 if we want)
+    
     chosen_runs = set(r for r, _ in full_runs[:max(1, pick_from_first_k_runs)])
 
     # Group layer-instances by shape label
@@ -1381,11 +1634,11 @@ def plot_raw_latency_heatmaps_by_shape(
             # Build matrix [T x S]
             M = np.array([r["sets"] for r in rows], dtype=float)  # T x |HOT_SETS|
 
-            # Optional: downsample time axis to keep plots readable
+            
             if time_downsample > 1 and M.shape[0] > time_downsample:
                 M = M[::time_downsample, :]
 
-            # Optional: crop time rows
+           
             if max_time_rows and M.shape[0] > max_time_rows:
                 M = M[:max_time_rows, :]
 
@@ -1403,7 +1656,7 @@ def plot_raw_latency_heatmaps_by_shape(
             ax.set_xticks(range(len(HOT_SETS)))
             ax.set_xticklabels([str(s) for s in HOT_SETS], rotation=45, ha="right", fontsize=8)
 
-            #a colorbar
+            # Add a colorbar
             plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label="Latency (ticks)")
 
             fig.tight_layout()
@@ -1515,7 +1768,7 @@ def plot_mean_signature_by_shape(
         A = np.stack(acc, axis=0)     # [N x L x S]
         mean_sig = A.mean(axis=0)     # [L x S]
 
-        # Optional: robust clipping for better visual contrast
+        
         if robust_clip:
             lo = np.percentile(mean_sig, 5)
             hi = np.percentile(mean_sig, 95)
@@ -1603,11 +1856,26 @@ def run_train_mode():
     # Dump stats for kernel-shape features
     summarize_shape_feature_ranges(Xtr_sh, Ytr_sh)
 
-    # ----- TYPE head: GNB -----
+    # # ----- TYPE head: GNB -----
+    # mu_type, sd_type = standardize_fit(Xtr)
+    # XtrZ_type = standardize_apply(Xtr, mu_type, sd_type)
+    # clf_type = GNB()
+    # clf_type.fit(XtrZ_type, Ytr)
+
+    # ----- TYPE head: RandomForest -----
     mu_type, sd_type = standardize_fit(Xtr)
     XtrZ_type = standardize_apply(Xtr, mu_type, sd_type)
-    clf_type = GNB()
+
+    clf_type = RandomForestClassifier(
+        n_estimators=300,
+        max_depth=None,
+        min_samples_leaf=2,
+        class_weight="balanced",
+        n_jobs=-1,
+        random_state=RNG_SEED,
+    )
     clf_type.fit(XtrZ_type, Ytr)
+    print("[RF TYPE ] Class counts:", dict(Counter(Ytr)))
 
     # ----- SHAPE head: RandomForest -----
     clf_shape = None
@@ -1634,11 +1902,11 @@ def run_train_mode():
         
         # NEW: PCA visualization of SHAPE features
         plot_shape_pca(Xtr_sh, Ytr_sh, mu_sh, sd_sh,
-                       out_path="mobilenetv2_shape_pca_3d.png")
+                       out_path="resnet18v1_shape_pca_3d.png")
         
         # NEW: UMAP 2D plot for kernel-shape features
         plot_shape_umap(Xtr_sh, Ytr_sh,
-                        out_path="mobilenetv2_shape_umap_2d.png",
+                        out_path="resnet18v1_shape_umap_2d.png",
                         scalar_only=True)
 
         if Xtr_cin:
@@ -1960,7 +2228,7 @@ def run_test_on_pair_spike_only(test_json, test_spike,
     #for idx,(ridx, layer_idx, name, op_type, dur) in enumerate(meta_te_sh):
     for idx, m in enumerate(meta_te_sh):
         ridx, layer_idx, name, op_type, dur = m[:5]
-        # start_us, end_us = m[5], m[6]   # (optional) if we need them here later
+        # start_us, end_us = m[5], m[6]   #  if we need them here later
 
         by_layer_sh[name].append(idx)
 
@@ -1990,18 +2258,6 @@ def run_test_on_pair_spike_only(test_json, test_spike,
         time_downsample=1,
     )
     
-    # --- Mean signature visualization (one compact heatmap per shape) ---
-    #plot_mean_signature_by_shape(
-    #    test_spike=test_spike,
-    #    full_runs=full,
-    #    meta_te_sh=meta_te_sh,
-    #    y_labels_sh=Yte_sh,             # use GT labels for clean grouping
-    #    out_dir="raw_shape_mean_signatures",
-    #    first_k_runs=10,                # change to 20 if we want
-    #    L=200,                          # normalized time length
-    #    per_shape_max_windows=300,      # safety cap
-    #    robust_clip=True,
-    #)
 
 
     
@@ -2218,7 +2474,7 @@ def run_test_on_pair(test_json, test_spike,
     #for idx,(ridx, layer_idx, name, op_type, dur) in enumerate(meta_te_sh):
     for idx, m in enumerate(meta_te_sh):
         ridx, layer_idx, name, op_type, dur = m[:5]
-        # start_us, end_us = m[5], m[6]   # (optional) if we need them here later
+        # start_us, end_us = m[5], m[6]   
 
         by_layer_sh[name].append(idx)
 
@@ -2247,19 +2503,7 @@ def run_test_on_pair(test_json, test_spike,
         max_time_rows=250,
         time_downsample=1,
     )
-    
-    # --- Mean signature visualization (one compact heatmap per shape) ---
-    #plot_mean_signature_by_shape(
-    #    test_spike=test_spike,
-    #    full_runs=full,
-    #    meta_te_sh=meta_te_sh,
-    #    y_labels_sh=Yte_sh,             # use GT labels for clean grouping
-    #    out_dir="raw_shape_mean_signatures",
-    #    first_k_runs=10,                # change to 20 if we want
-    #    L=200,                          # normalized time length
-    #    per_shape_max_windows=300,      # safety cap
-    #    robust_clip=True,
-    #)
+
 
 
     

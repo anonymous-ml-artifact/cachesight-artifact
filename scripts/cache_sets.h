@@ -6,7 +6,7 @@
 
 // Cache sets corresponding to hot functions in libonnxruntime.so (from compute_hot_functions_cache_sets.py)
 static const int hot_cache_sets[NUM_CACHE_SETS] = {
-    1676, 1684, 9845, 3147, 7845, 3144, 3146, 3179, 3183, 1685
+    5658, 14681, 2122, 12639, 9878, 4978, 10993, 10992, 11006, 11004
 };
 
 

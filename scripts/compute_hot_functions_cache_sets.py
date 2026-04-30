@@ -9,32 +9,23 @@ CACHE_LINE_SIZE = 64
 L3_NUM_SETS = 16384
 
 
-# Your hot function offsets from simpleperf (without the lib prefix)
+# Our hot function offsets from simpleperf (without the lib prefix)
 HOT_FUNCTION_OFFSETS = [
-    0xc83318,  # Your top hot function
-
-    0xC83530,
-    0xC7DD54,
-    0xC83304,
-    0xC9C2F8,
-    0xC8C958,
-    0xC9C210,
-    0xC9C214,
-    0xC9C2B0,
-    0xC9CAD8,
-    0xC9CADC,
-    0xC9CBC0,
-    0xC83528,
-    0xC9C218,
-    0xC83564,
-    0xC9C21C,
-    0xC83554,
-    0xC9C2B4,
-    0xC9C20C,
-    0xC9C2FC
-
+    0xcc1f78,
+    0xd05a14,
+    0xd29c80,
+    0xd2fc50,
+    0xd190c0,
+    0xd0b880,
+    0xd259b8,
+    0xd259fc,
+    0xd25a44,
+    0xd25acc,
+    0xd25c0c,
+    0xd25a98,
+    0xd190f4,
+    0xd25b94,
     
-    # Add more as needed
 ]
 
 
@@ -43,13 +34,32 @@ HOT_FUNCTION_OFFSETS = [
 def read_maps_file(maps_file="maps.txt"):
     with open(maps_file, "r") as f:
         for line in f:
-            if "base.apk" in line and "r-xp" in line and "mobilenetv2tfliteapp" in line:
-                parts = line.split()
+
+            if "r-xp" not in line:
+                continue
+
+            if "base.apk" not in line:
+                continue
+
+            parts = line.split()
+
+            try:
                 addr_range = parts[0].split('-')
                 start = int(addr_range[0], 16)
-                print(f"Found base.apk executable at: {hex(start)}")
-                return start
-    raise Exception("No executable APK mapping found")
+
+
+                base_addr = start
+
+            except Exception:
+                continue
+
+            print("FOUND APK EXECUTABLE MAPPING:")
+            print(line.strip())
+            print(f"Base addr: {hex(base_addr)}")
+
+            return base_addr
+
+    raise Exception("base.apk mapping not found")
 
 def parse_simpleperf_offset(offset_str):
     """Parse offset from simpleperf format like [+c83318] or just c83318"""
@@ -69,7 +79,7 @@ def virt_to_phys(pagemap_data, vaddr):
     entry = pagemap_data[offset:offset + PAGEMAP_ENTRY_SIZE]
     val = struct.unpack("Q", entry)[0]
     
-    # Check if page is present (bit 63)
+  
     if (val >> 63) == 0:
         return None
         
@@ -79,16 +89,18 @@ def virt_to_phys(pagemap_data, vaddr):
     return paddr
 
 def compute_cache_mapping(paddr):
-    """Compute cache set from physical address"""
-    # Cache set index (bits 6-19 for 16K sets)
-    set_index = (paddr >> 6) & (L3_NUM_SETS - 1)
-    
-    # 4KB page offset for prime+probe
-    page_offset = paddr & (PAGE_SIZE - 1)
-    
+    line = paddr >> 6
+
+    # more stable ARM-style approximation
+    set_index = (
+        line ^
+        (line >> 15) ^
+        (line >> 23)
+    ) & (L3_NUM_SETS - 1)
+
     return {
         'set': set_index,
-        'page_offset': page_offset,
+        'page_offset': paddr & (PAGE_SIZE - 1),
         'paddr': paddr
     }
 
@@ -132,6 +144,7 @@ def main():
     
     for offset in HOT_FUNCTION_OFFSETS:
         vaddr = base_addr + offset
+
         paddr = virt_to_phys(pagemap_data, vaddr)
         
         if paddr:
@@ -148,25 +161,40 @@ def main():
             print(f"0x{offset:08x} -> NOT MAPPED (page not present)")
 
     # Step 4: Generate eviction sets JSON
-    if results:
-        import json
-        eviction_sets = []
-        seen_offsets = set()
+    from collections import defaultdict
+
+    # group addresses by cache set
+    groups = defaultdict(list)
+
+    for r in results:
+        groups[r['cache_set']].append(r)
+
+    eviction_sets = []
+
+    for set_id, items in groups.items():
+        if len(items) >= 12:   # threshold
+
+            addresses = []
+            seen_pages = set()
+
+            for x in items:
+                page = x['paddr'] >> 12
+
+                if page not in seen_pages:
+                    seen_pages.add(page)
+
+                    aligned_addr = x['paddr'] & ~(CACHE_LINE_SIZE - 1)
+                    addresses.append(hex(aligned_addr))
+
+                if len(addresses) >= 32:
+                    break
+
+            eviction_sets.append({
+                "cache_set": set_id,
+                "addresses": addresses
+            })
         
-        for r in results:
-            page_off = r['page_offset'] & ~0x3F  # Align to cache line
-            if page_off not in seen_offsets:
-                seen_offsets.add(page_off)
-                eviction_sets.append({
-                    "target_offset": f"0x{page_off:x}",
-                    "cache_set": r['cache_set'],
-                    "source": f"function_0x{r['offset']:x}"
-                })
-        
-        with open("eviction_sets.json", "w") as f:
-            json.dump({"eviction_sets": eviction_sets}, f, indent=2)
-        
-        print(f"\nGenerated eviction_sets.json with {len(eviction_sets)} unique targets")
+    print(f"\nGenerated eviction_sets.json with {len(eviction_sets)} unique targets")
 
 if __name__ == "__main__":
     main()

