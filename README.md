@@ -10,7 +10,7 @@ This repository contains the artifacts required to reproduce the core results of
 This artifact includes:
 
 - ExecuTorch layer profiling reconstruction pipeline (ETDump → layer timeline) (scripts/run_and_collect_executorch.sh)
-- Cache side-channel data (Prime+Probe spike logs) (e.g., data/mobilenetv2/spike_log1.txt)
+- Cache side-channel data (Prime+Probe spike logs) (e.g., data/mobilenetv2/spike_log1_parts)
 - ONNX reference profiling traces (e.g., data/mobilenetv2/onnx.json)
 - ExecuTorch profiling traces (data/resnet18v1/executorch_layer_timeline1.csv)
 - Native Prime+Probe code (scripts/prime_probe.c)
