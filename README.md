@@ -115,30 +115,47 @@ This step:
 
 **Note:** ETDump files are not fully included due to size constraints.
 
-## Artifact Limitations (Space Constraints)
 
-Due to GitHub repository size limits (2GB), we provide:
+## Artifact Limitations (Data Size and Responsible Release)
 
-- Representative profiling files (CSV)
-- Representative spike logs
-- Representative ONNX traces
+To enable offline reproducibility, we provide representative samples of:
 
-We do **NOT** include:
+- ExecuTorch layer timelines (CSV)
+- Prime+Probe cache traces (spike logs)
+- ONNX reference profiling traces
 
-- Full ETDump traces for all 50 runs
-- All collected spike logs
-- Android application source code (~5GB per app)
+However, we do not include the full dataset used in the paper, which consists of multiple spike logs and corresponding profiling files per model.
 
-However:
+### Reason 1: Storage Constraints
 
-- All provided samples are sufficient to reproduce the evaluation pipeline
-- All scripts are included for full reproduction on a local device
-- The methodology is identical across all models (MobileNetV2, ResNet18V1, EfficientNet-Lite4)
+Each Prime+Probe spike log is approximately 400–500 MB.  
+The complete dataset (multiple runs across multiple models) exceeds GitHub’s repository size limits (2GB).
 
-Thus, reviewers can fully evaluate the correctness of the approach using the provided artifacts.
+To remain within these constraints, we include a **single representative spike log and profiling file per model**, which is sufficient to:
 
+- demonstrate the full pipeline
+- validate alignment and feature extraction
+- reproduce the training and evaluation process
 
+### Reason 2: Responsible Disclosure
 
-## Artifacts not fully shared
+The provided cache traces capture detailed microarchitectural behavior of real devices.  
+Releasing large-scale raw traces may facilitate unintended misuse of side-channel techniques.
 
-The raw device-specific perf or pagemap dumps are omitted, this is because they contain device-specific memory layout information and are not needed for offline reproduction. We instead provide derived hot cache sets and scripts for regenerating them on a local device.
+To mitigate this risk, we release only a limited subset of traces necessary for scientific evaluation, while preserving the reproducibility of the methodology.
+
+### Reproducibility Impact
+
+- The provided data allows reviewers to reproduce the full pipeline and verify correctness.
+- Using a single trace per model may result in slightly lower accuracy compared to the full dataset used in the paper.
+- The methodology, feature extraction, and classification pipeline remain identical.
+
+### Full Reproduction
+
+Researchers who wish to fully reproduce the dataset can:
+
+1. Run the provided Android pipeline (Section: Full Device Reproduction)
+2. Collect multiple spike logs (Prime+Probe traces)
+3. Re-run the training script with additional data
+
+This process is fully supported by the provided scripts.
