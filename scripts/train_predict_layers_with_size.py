@@ -39,16 +39,16 @@ HOT_SETS   = [11644, 8735, 6434, 8481, 12850, 6710, 6711, 6713, 6715, 6688]
 
 TRAIN_PAIRS = [
     #("profiling_files/resnet18v1_executorch_layer_timeline1.csv",  "spike_files_execu/ResNet_spike_log1.txt"),
-    ("profiling_files/resnet18v1_executorch_layer_timeline13.csv",  "spike_files_execu/ResNet_spike_log13.txt"),
-    ("profiling_files/resnet18v1_executorch_layer_timeline14.csv",  "spike_files_execu/ResNet_spike_log14.txt"),
-    ("profiling_files/resnet18v1_executorch_layer_timeline15.csv",  "spike_files_execu/ResNet_spike_log15.txt"),
-    ("profiling_files/resnet18v1_executorch_layer_timeline16.csv",  "spike_files_execu/ResNet_spike_log16.txt"),
-    ("profiling_files/resnet18v1_executorch_layer_timeline17.csv",  "spike_files_execu/ResNet_spike_log17.txt"),
-    ("profiling_files/resnet18v1_executorch_layer_timeline18.csv",  "spike_files_execu/ResNet_spike_log18.txt"),
-    ("profiling_files/resnet18v1_executorch_layer_timeline19.csv",  "spike_files_execu/ResNet_spike_log19.txt"),
-    ("profiling_files/resnet18v1_executorch_layer_timeline20.csv",  "spike_files_execu/ResNet_spike_log20.txt"),
-    ("profiling_files/resnet18v1_executorch_layer_timeline21.csv",  "spike_files_execu/ResNet_spike_log21.txt"),
-    ("profiling_files/resnet18v1_executorch_layer_timeline22.csv",  "spike_files_execu/ResNet_spike_log22.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline1.csv",  "spike_files_execu/ResNet_spike_log1.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline2.csv",  "spike_files_execu/ResNet_spike_log2.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline3.csv",  "spike_files_execu/ResNet_spike_log3.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline4.csv",  "spike_files_execu/ResNet_spike_log4.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline5.csv",  "spike_files_execu/ResNet_spike_log5.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline6.csv",  "spike_files_execu/ResNet_spike_log6.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline7.csv",  "spike_files_execu/ResNet_spike_log7.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline8.csv",  "spike_files_execu/ResNet_spike_log8.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline9.csv",  "spike_files_execu/ResNet_spike_log9.txt"),
+    ("profiling_files/resnet18v1_executorch_layer_timeline10.csv",  "spike_files_execu/ResNet_spike_log10.txt"),
     # add the rest similarly
 
 ]
@@ -60,7 +60,7 @@ TRAIN_PAIRS = [
 # In TEST mode:
 #   - We IGNORE TRAIN_PAIRS content and ONLY test on TEST_PAIR (must be set)
 #TEST_PAIR = None
-TEST_PAIR = ("profiling_files/resnet18v1_executorch_layer_timeline23.csv", "spike_files_execu/ResNet_spike_log23.txt")
+TEST_PAIR = ("profiling_files/resnet18v1_executorch_layer_timeline11.csv", "spike_files_execu/ResNet_spike_log11.txt")
 
 
 # ======= Model-level (spike-only) classifier config =======

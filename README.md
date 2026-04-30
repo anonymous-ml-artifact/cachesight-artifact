@@ -137,3 +137,8 @@ However:
 
 Thus, reviewers can fully evaluate the correctness of the approach using the provided artifacts.
 
+
+
+## Artifacts not fully shared
+
+The raw device-specific perf or pagemap dumps are omitted, this is because they contain device-specific memory layout information and are not needed for offline reproduction. We instead provide derived hot cache sets and scripts for regenerating them on a local device.
